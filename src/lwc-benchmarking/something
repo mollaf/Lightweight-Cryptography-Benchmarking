@@ -1,0 +1,55 @@
+--- Available filters and text transformations: colorize, debug, default, direct, hexlify, log2file, nocontrol, printable, send_on_enter, time
+--- More details at http://bit.ly/pio-monitor-filters
+
+ad=72 msg=88 6 
+ad=72 msg=64 enc=242508 dec=242544 
+ad=72 msg=72 enc=252616 dec=252648 
+ad=72 msg=80 enc=262720 dec=262752 
+ad=72 msg=88 6 
+ad=72 msg=64 enc=242508 dec=242544 
+ad=72 msg=72 enc=252616 dec=252648 
+ad=72 msg=80 enc=262720 dec=262752 
+ad=72 msg=88 
+5 seconds
+4 seconds
+3 seconds
+2 seconds
+1 seconds
+# AEAD Benchmarking
+platform = uno
+config = Os
+build time = Mar  9 2021 - 20:49:16
+variant = aceae128v1
+impl = ref
+timer = micros
+
+ad=0 msg=0 enc=60684 dec=60700 
+ad=0 msg=8 enc=70792 dec=70808 
+ad=0 msg=16 enc=80896 dec=80912 
+ad=0 msg=24 enc=91000 dec=91016 
+ad=0 msg=32 enc=101104 dec=101128 
+ad=0 msg=40 enc=111208 dec=111236 
+ad=0 msg=48 enc=121312 dec=121340 
+ad=0 msg=56 enc=131416 dec=131440 
+ad=0 msg=64 enc=141516 dec=141548 
+ad=0 msg=72 enc=151620 dec=151656 
+ad=0 msg=80 enc=161724 dec=161764 
+ad=0 msg=88 enc=171824 dec=171868 
+ad=0 msg=96 enc=181932 dec=181972 
+ad=0 msg=104 enc=192036 dec=192080 
+ad=0 msg=112 enc=202140 dec=202184 
+ad=0 msg=120 enc=212244 dec=212292 
+ad=0 msg=128 enc=222340 dec=222400 
+ad=8 msg=0 enc=80884 dec=80896 
+ad=8 msg=8 enc=90992 dec=91008 
+ad=8 msg=16 enc=101100 dec=101112 
+ad=8 msg=24 enc=111204 dec=111220 
+ad=8 msg=32 enc=121304 dec=121324 
+ad=8 msg=40 enc=131408 dec=131428 
+ad=8 msg=48 enc=141508 dec=141536 
+ad=8 msg=56 enc=151612 dec=151644 
+ad=8 msg=64 enc=161716 dec=161748 
+ad=8 msg=72 enc=171820 dec=171852 
+ad=8 msg=80 enc=181924 dec=181964 
+ad=8 msg=88 enc=192028 dec=192068 
+ad=8 msg=96 

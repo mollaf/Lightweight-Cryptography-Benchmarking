@@ -34,7 +34,8 @@
 
 #if defined(LWC_EXPERIMENT_TIMING)
 
-const uint32_t ShortInputStep = 8;
+// const uint32_t ShortInputStep = 8;
+const uint32_t ShortInputStep = 64;
 
 #if defined(LWC_PLATFORM_UNO) || defined(LWC_PLATFORM_NANOEVERY)
     using timer = timer_micros;
@@ -266,19 +267,19 @@ int aead_timing_experiments()
         ret |= benchmark_aead<timer, Trials>(lwc_aead_cipher, adrange, msgrange, false);
     }
  
-    {
-      // Test case : Empty AD, Long Message
-      auto adrange = LinearRange<0, 0, 1>();
-      auto msgrange = LinearRange<MaxShortInputLength + LongInputStep, MaxLongInputLength, LongInputStep>();
-      ret |= benchmark_aead<timer, Trials>(lwc_aead_cipher, adrange, msgrange, false);
-    }
+    // {
+    //   // Test case : Empty AD, Long Message
+    //   auto adrange = LinearRange<0, 0, 1>();
+    //   auto msgrange = LinearRange<MaxShortInputLength + LongInputStep, MaxLongInputLength, LongInputStep>();
+    //   ret |= benchmark_aead<timer, Trials>(lwc_aead_cipher, adrange, msgrange, false);
+    // }
    
-    {
-      // Test case : Empty Message, Long AD
-      auto adrange = LinearRange<MaxShortInputLength + LongInputStep, MaxLongInputLength, LongInputStep>();
-      auto msgrange = LinearRange<0, 0, 1>();
-      ret |= benchmark_aead<timer, Trials>(lwc_aead_cipher, adrange, msgrange, false);
-    }
+    // {
+    //   // Test case : Empty Message, Long AD
+    //   auto adrange = LinearRange<MaxShortInputLength + LongInputStep, MaxLongInputLength, LongInputStep>();
+    //   auto msgrange = LinearRange<0, 0, 1>();
+    //   ret |= benchmark_aead<timer, Trials>(lwc_aead_cipher, adrange, msgrange, false);
+    // }
     
 
     return ret;

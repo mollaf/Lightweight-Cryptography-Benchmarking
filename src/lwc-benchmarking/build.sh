@@ -32,7 +32,7 @@
 #!/bin/bash
 
 # Target platform names
-platform_list=("mkrzero uno nano33ble nano_every nodemcuv2 chipkit_mx3")
+platform_list=("mkrzero uno nano33ble nano_every nodemcuv2 chipkit_mx3 lpmsp430g2553 lpmsp430fr4133 nucleo_f030r8")
 
 # List of experiments to be performed
 experiment_list=("size kat timing")
@@ -174,24 +174,28 @@ function verify_kat() {
 				echo $lwc_mode_genkat > src/lwc_mode.h
 
 				print_info "building implementation $impl with config $conf"
-				platformio.exe run --verbose --environment $conf > $buildout 2> $builderr
+				platformio run --verbose --environment $conf > $buildout 2> $builderr
 
 				if [[ "$?" -ne 0 ]]; then
 					print_error "build failed for $submission, $variant, $impl, $conf"
 					printf ",kat_err_build" >> $results_file
 				else
 
+					# KAT
+
 					stop_watch "uploading" 3
-					platformio.exe run --verbose --target upload --environment $conf > $temp_folder/upload_out.txt 2> $temp_folder/upload_err.txt
+
+					platformio run --verbose --target upload --environment $conf > $temp_folder/upload_out.txt 2> $temp_folder/upload_err.txt
 					sleep 3s
-					platformio.exe device monitor > $outfile& 2> $temp_folder/serial_err.txt
-					PID=$!
+					echo "device monitor"
+					# platformio device monitor > $outfile 2> $temp_folder/serial_err.txt &
+					# coproc platformio device monitor 
+					# platformio device monitor 2> $temp_folder/serial_err.txt | tee $outfile
+					platformio device monitor  2> $temp_folder/serial_err.txt &
 
 					wait_eof_marker
-						
-					kill -9 $PID
 
-					python trim_genkat_output.py $outfile > $temp_folder/kat.txt
+					python3 trim_genkat_output.py $outfile > $temp_folder/kat.txt
 
 					diff -w $temp_folder/kat.txt $impl_folder/$submission/$prim_dir/$variant/$kat_file > $difffile
 
@@ -249,7 +253,7 @@ function measure_code_size() {
 			echo "#define LWC_MODE_USE_$mode" > src/lwc_mode.h
 
 			if [[ $prim == "aead" ]]; then
-				python gen_lwc_aead.py src/iut/$impl/lwc_crypto_aead.in $mode > src/iut/$impl/$infile
+				python3 gen_lwc_aead.py src/iut/$impl/lwc_crypto_aead.in $mode > src/iut/$impl/$infile
 			fi
 
 			# Skip if an output file exists
@@ -260,8 +264,10 @@ function measure_code_size() {
 				printf "$submission,$variant,$impl,$conf,$mode" >> $out_folder/sizes_raw.txt
 
 				print_info "building implementation $impl with config $conf"
-
-				platformio.exe run --verbose --environment $conf > $outfile 2> $errfile
+				
+				
+				platformio run --verbose --environment $conf > $outfile 2> $errfile
+				
 
 				if [[ "$?" -ne 0 ]]; then
 					print_error "build failed for $submission, $variant, $impl, $conf, $mode"
@@ -284,7 +290,7 @@ function measure_code_size() {
 						bss=$(awk '/\.bss/ {print $2}' $outfile)
 						printf ",$data,$text,$rodata,$bss" >> $out_folder/sizes_raw.txt
 					elif [[ $target == "chipkit_mx3" ]]; then
-						data=$(python chipkit_codesize.py $outfile)
+						data=$(python3 chipkit_codesize.py $outfile)
 						printf ",$data" >> $out_folder/sizes_raw.txt
 					else
 						bss=$(awk '/\.bss\s/ {print $2}' $outfile)
@@ -339,21 +345,44 @@ function measure_timing() {
 			else
 				print_info "building implementation $impl with config $conf"
 
-				platformio.exe run --verbose --environment $conf > $buildout 2> $builderr
+				platformio run --verbose --environment $conf > $buildout 2> $builderr
 
 				if [[ "$?" -ne 0 ]]; then
 					print_error "build failed for $submission, $variant, $impl, $conf"
 					echo "build failed" > $outfile
 				else
 					stop_watch "uploading" 3
-					platformio.exe run --verbose --target upload --environment $conf > $uploadout 2> $uploaderr
+					echo "1"
+					echo $conf
+					echo $uploadout
+					echo $uploaderr
+					# platformio run --verbose --target upload --environment $conf > $uploadout 2> $uploaderr
+					platformio run --verbose --target upload --environment $conf
+					
+					# platformio run --verbose --target upload --environment uno-release-os
 					sleep 3s
-					platformio.exe device monitor > $outfile&
+
+					echo "device monitor"
+					# echo "2"
+					# read -s -n 1 -p "Press any key to continue . . ."
+ 					# echo ""
+					# echo $outfile
+					# coproc platformio device monitor 1> $outfile 
+					
+					# platformio device monitor & 
+					# platformio -c vscode device monitor > $outfile &
+					# /home/molla/.platformio/penv/bin/python -u /home/molla/.platformio/penv/bin/platformio device monitor > $outfile & 
+					# platformio device monitor 1> $outfile 
+					platformio device monitor | tee $outfile &  
 					PID=$!
+					echo $(($PID-1))
+
+					sleep 3s
 
 					wait_eof_marker
 
-					kill -9 $PID
+					kill $(($PID-1))
+					
 				fi
 
 			fi
